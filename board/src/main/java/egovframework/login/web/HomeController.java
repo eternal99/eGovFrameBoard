@@ -6,21 +6,42 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import egovframework.example.sample.service.MainService;
+import egovframework.login.domain.member.Member;
+import egovframework.login.domain.member.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class HomeController {
+	private final MemberRepository memberRepository;
 	
-	@GetMapping("/")
+//	@GetMapping("/")
 	public String home() {
 		return "home";
 	}
 	
+	@GetMapping("/")
+	public String homeLogin(@CookieValue(name="memberId", required = false) Long memberId, Model model) {
+		if (memberId == null) {
+			return "home";
+		}
+		// 로그인
+		Member loginMember = memberRepository.findById(memberId);
+		if (loginMember == null) {
+			return "home";
+		}
+		
+		model.addAttribute("member", loginMember);
+		return "loginHome";
+	}
 	/**
 	@Resource(name="MainService")
 	MainService mainService;
