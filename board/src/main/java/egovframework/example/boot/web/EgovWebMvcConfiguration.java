@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.DefaultPaginationManager;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationRenderer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.filter.OrderedCharacterEncodingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -23,6 +23,11 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.thymeleaf.templatemode.TemplateMode;
+
 import egovframework.example.cmmn.web.EgovBindingInitializer;
 import egovframework.example.cmmn.web.EgovImgPaginationRenderer;
 
@@ -61,7 +66,7 @@ public class EgovWebMvcConfiguration extends WebMvcConfigurationSupport {
 		smer.setStatusCodes(statusCode);
 		exceptionResolvers.add(smer);
 	}
-
+	/** 기존 코드
 	@Bean
 	public UrlBasedViewResolver urlBasedViewResolver() {
 		UrlBasedViewResolver urlBasedViewResolver = new UrlBasedViewResolver();
@@ -71,7 +76,46 @@ public class EgovWebMvcConfiguration extends WebMvcConfigurationSupport {
 		urlBasedViewResolver.setSuffix(".jsp");
 		return urlBasedViewResolver;
 	}
+	**/
 
+	@Bean
+	public UrlBasedViewResolver urlBasedViewResolver() {
+	    UrlBasedViewResolver urlBasedViewResolver = new UrlBasedViewResolver();
+	    urlBasedViewResolver.setOrder(2); // Thymeleaf보다 우선순위를 낮게 설정
+	    urlBasedViewResolver.setViewClass(JstlView.class);
+	    urlBasedViewResolver.setPrefix("/WEB-INF/jsp/egovframework/example/");
+	    urlBasedViewResolver.setSuffix(".jsp");
+	    return urlBasedViewResolver;
+	}
+
+	@Bean
+	public SpringTemplateEngine templateEngine() {
+	    SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+	    templateEngine.setTemplateResolver(thymeleafTemplateResolver());
+	    return templateEngine;
+	}
+
+	@Bean
+	public SpringResourceTemplateResolver thymeleafTemplateResolver() {
+	    SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+	    templateResolver.setPrefix("classpath:/templates/");
+	    templateResolver.setSuffix(".html");
+	    templateResolver.setTemplateMode(TemplateMode.HTML);
+	    templateResolver.setCharacterEncoding("UTF-8");
+	    templateResolver.setOrder(1); // JSP 뷰 리졸버보다 우선순위를 높게 설정
+	    return templateResolver;
+	}
+
+	@Bean
+	public ThymeleafViewResolver thymeleafViewResolver() {
+	    ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+	    viewResolver.setTemplateEngine(templateEngine());
+	    viewResolver.setCharacterEncoding("UTF-8");
+	    viewResolver.setOrder(0); // 가장 우선순위가 높도록 설정
+	    return viewResolver;
+	}
+
+	
 	@Bean
 	public EgovImgPaginationRenderer imageRenderer() {
 		return new EgovImgPaginationRenderer();
@@ -115,7 +159,7 @@ public class EgovWebMvcConfiguration extends WebMvcConfigurationSupport {
 		filter.setForceEncoding(true);
 		filter.setEncoding("UTF-8");
 		registrationBean.setFilter(filter);
-		registrationBean.addUrlPatterns("*.do");
+//		registrationBean.addUrlPatterns("*.do");
 		return registrationBean;
 	}
 

@@ -1,4 +1,4 @@
-package egovframework.example.sample.web;
+package egovframework.login.web;
 
 import java.util.HashMap;
 
@@ -14,8 +14,14 @@ import egovframework.example.sample.service.MainService;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
-public class MainController {
+public class HomeController {
 	
+	@GetMapping("/")
+	public String home() {
+		return "home";
+	}
+	
+	/**
 	@Resource(name="MainService")
 	MainService mainService;
 
@@ -54,5 +60,5 @@ public class MainController {
 		request.getSession().invalidate();
 		System.out.println("," + request.getSession().getAttribute("myid").toString());
 		return "login/logout";
-	}
+	} **/
 }
