@@ -1,6 +1,8 @@
 server:
   port: 9090
-
+  servlet:
+    session:
+      tracking-modes: cookie
 # application.properties
 spring:
   main:
@@ -21,4 +23,3 @@ spring:
   logging:
   level:
     root: debug
-
