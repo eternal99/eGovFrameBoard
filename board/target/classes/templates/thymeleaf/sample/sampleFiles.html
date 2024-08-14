@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sample Files</title>
+</head>
+<body>
+    <h1>Sample Files</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>File Name</th>
+                <th>File Size</th>
+                <th>Upload Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="file : ${files}">
+                <td th:text="${file.fileName}"></td>
+                <td th:text="${file.fileSize}"></td>
+                <td th:text="${#temporals.format(file.uploadDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td>
+                    <a th:href="@{'/sample/download/' + ${file.fileId}}">Download</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

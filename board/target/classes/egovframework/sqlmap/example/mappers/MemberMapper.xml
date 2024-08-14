@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.login.domain.member.MemberRepository">
+
+    <insert id="save" parameterType="Member" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO members (loginId, name, password, IS_ADMIN)
+        VALUES (#{loginId}, #{name}, #{password}, #{admin, jdbcType=TINYINT})
+    </insert>
+
+    <select id="findById" parameterType="long" resultType="Member">
+        SELECT * FROM members WHERE id = #{id}
+    </select>
+
+    <select id="findByLoginId" parameterType="string" resultType="Member">
+        SELECT * FROM members WHERE loginId = #{loginId}
+    </select>
+
+    <select id="findAll" resultType="Member">
+        SELECT * FROM members
+    </select>
+
+</mapper>

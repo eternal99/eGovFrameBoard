@@ -15,38 +15,46 @@
  */
 package egovframework.example.sample.service.impl;
 
+import java.io.File;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import egovframework.example.sample.service.EgovSampleService;
 import egovframework.example.sample.service.SampleDefaultVO;
+import egovframework.example.sample.service.SampleFileVO;
 import egovframework.example.sample.service.SampleVO;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.egovframe.rte.fdl.idgnr.EgovIdGnrService;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @Class Name : EgovSampleServiceImpl.java
  * @Description : Sample Business Implement Class
  * @Modification Information
- * @
- * @  수정일      수정자              수정내용
- * @ ---------   ---------   -------------------------------
- * @ 2009.03.16           최초생성
+ * @ @ 수정일 수정자 수정내용 @ --------- --------- ------------------------------- @
+ *   2009.03.16 최초생성
  *
  * @author 개발프레임웍크 실행환경 개발팀
  * @since 2009. 03.16
  * @version 1.0
  * @see
  *
- *  Copyright (C) by MOPAS All right reserved.
+ *      Copyright (C) by MOPAS All right reserved.
  */
-
+@Slf4j
 @Service("sampleService")
 public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements EgovSampleService {
 
@@ -57,15 +65,18 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 //	@Resource(name = "sampleDAO")
 //	private SampleDAO sampleDAO;
 	// TODO mybatis 사용
-	  @Resource(name="sampleMapper")
-		private SampleMapper sampleDAO;
+	@Resource(name = "sampleMapper")
+	private SampleMapper sampleDAO;
 
 	/** ID Generation */
 	@Resource(name = "egovIdGnrService")
 	private EgovIdGnrService egovIdGnrService;
 
+	public String uploadDir = "C:/Users/fasol/Desktop/uploadFiles/";
+
 	/**
 	 * 글을 등록한다.
+	 * 
 	 * @param vo - 등록할 정보가 담긴 SampleVO
 	 * @return 등록 결과
 	 * @exception Exception
@@ -74,17 +85,49 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	public String insertSample(SampleVO vo) throws Exception {
 		LOGGER.debug(vo.toString());
 
-		/** ID Generation Service */
 		String id = egovIdGnrService.getNextStringId();
 		vo.setId(id);
 		LOGGER.debug(vo.toString());
 
 		sampleDAO.insertSample(vo);
+
+		if (vo.getFiles() != null && !vo.getFiles().isEmpty()) {
+			uploadSampleFiles(id, vo.getFiles());
+			log.info("성공{}", id);
+		}
+
 		return id;
 	}
 
+	@Override
+	public void uploadSampleFiles(String sampleId, List<MultipartFile> files) throws Exception {
+		for (MultipartFile file : files) {
+			if (!file.isEmpty()) {
+				String originalFileName = file.getOriginalFilename();
+				String savedFileName = UUID.randomUUID().toString() + getFileExtension(originalFileName);
+				String filePath = uploadDir + File.separator + savedFileName;
+
+				File dest = new File(filePath);
+				file.transferTo(dest);
+
+				SampleFileVO sampleFileVO = new SampleFileVO();
+				sampleFileVO.setFileId(UUID.randomUUID().toString());
+				sampleFileVO.setSampleId(sampleId);
+				sampleFileVO.setFileName(originalFileName);
+				sampleFileVO.setFilePath(filePath);
+				sampleFileVO.setFileSize(file.getSize());
+				sampleFileVO.setFileType(file.getContentType());
+				sampleFileVO.setUploadDate(LocalDateTime.now());
+
+				sampleDAO.insertSampleFile(sampleFileVO);
+			}
+		}
+	}
+	
+
 	/**
 	 * 글을 수정한다.
+	 * 
 	 * @param vo - 수정할 정보가 담긴 SampleVO
 	 * @return void형
 	 * @exception Exception
@@ -96,6 +139,7 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 
 	/**
 	 * 글을 삭제한다.
+	 * 
 	 * @param vo - 삭제할 정보가 담긴 SampleVO
 	 * @return void형
 	 * @exception Exception
@@ -107,6 +151,7 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 
 	/**
 	 * 글을 조회한다.
+	 * 
 	 * @param vo - 조회할 정보가 담긴 SampleVO
 	 * @return 조회한 글
 	 * @exception Exception
@@ -121,6 +166,7 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 
 	/**
 	 * 글 목록을 조회한다.
+	 * 
 	 * @param searchVO - 조회할 정보가 담긴 VO
 	 * @return 글 목록
 	 * @exception Exception
@@ -132,6 +178,7 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 
 	/**
 	 * 글 총 갯수를 조회한다.
+	 * 
 	 * @param searchVO - 조회할 정보가 담긴 VO
 	 * @return 글 총 갯수
 	 * @exception
@@ -140,5 +187,53 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	public int selectSampleListTotCnt(SampleDefaultVO searchVO) {
 		return sampleDAO.selectSampleListTotCnt(searchVO);
 	}
+
+	@Override
+	public List<SampleFileVO> getSampleFiles(String sampleId) throws Exception {
+		return sampleDAO.selectSampleFilesBySampleId(sampleId);
+	}
+
+	@Override
+	public void deleteSampleFile(String fileId) throws Exception {
+		SampleFileVO file = sampleDAO.selectSampleFileByFileId(fileId);
+		if (file != null) {
+			File fileToDelete = new File(file.getFilePath());
+			if (fileToDelete.exists()) {
+				fileToDelete.delete();
+			}
+			sampleDAO.deleteSampleFile(fileId);
+		}
+	}
+
+	@Override
+	public void saveFileInfo(String sampleId, List<String> fileNames) throws Exception {
+		for (String fileName : fileNames) {
+            SampleFileVO sampleFileVO = new SampleFileVO();
+            sampleFileVO.setFileId(UUID.randomUUID().toString());
+            sampleFileVO.setSampleId(sampleId);
+            sampleFileVO.setFileName(fileName);
+            sampleFileVO.setFilePath(uploadDir + File.separator + fileName);
+            sampleFileVO.setFileSize(new File(uploadDir + File.separator + fileName).length());
+            sampleFileVO.setFileType(getFileExtension(fileName));
+            sampleFileVO.setUploadDate(LocalDateTime.now());
+
+            sampleDAO.insertSampleFile(sampleFileVO);
+        }
+	}
+
+	private String getFileExtension(String fileName) {
+		return fileName.substring(fileName.lastIndexOf("."));
+	}
+	/*
+	@Override
+	public SampleFileVO getFileInfo(String fileId) throws Exception {
+		return sampleDAO.selectSampleFileByFileId(fileId);
+	}
+
+	@Override
+	public void saveFileInfo(String sampleId, List<String> fileNames) throws Exception {
+		// TODO Auto-generated method stub
+		
+	} */
 
 }

@@ -17,6 +17,8 @@ package egovframework.example.sample.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 /**
  * @Class Name : EgovSampleService.java
  * @Description : EgovSampleService Class
@@ -83,4 +85,13 @@ public interface EgovSampleService {
 	 */
 	int selectSampleListTotCnt(SampleDefaultVO searchVO);
 
-}
+	void saveFileInfo(String sampleId, List<String> fileNames) throws Exception;
+	
+	void uploadSampleFiles(String sampleId, List<MultipartFile> files) throws Exception;
+	
+    List<SampleFileVO> getSampleFiles(String sampleId) throws Exception;
+    
+    void deleteSampleFile(String fileId) throws Exception;
+    
+//    SampleFileVO getFileInfo(String fileId) throws Exception;
+}	

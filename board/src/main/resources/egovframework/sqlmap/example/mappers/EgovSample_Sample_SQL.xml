@@ -1,93 +1,137 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="egovframework.example.sample.service.impl.SampleMapper">
+<mapper
+	namespace="egovframework.example.sample.service.impl.SampleMapper">
 
-	<resultMap id="sample" type="egovframework.example.sample.service.SampleVO">
-		<result property="id" column="id"/>
-		<result property="name" column="name"/>
-		<result property="description" column="description"/>
-		<result property="useYn" column="use_yn"/>
-		<result property="regUser" column="reg_user"/>
+	<resultMap id="sample"
+		type="egovframework.example.sample.service.SampleVO">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="useYn" column="use_yn" />
+		<result property="regUser" column="reg_user" />
+	</resultMap>
+
+	<resultMap id="fileVO"
+		type="egovframework.example.sample.service.SampleFileVO">
+		<result property="fileId" column="file_Id" />
+		<result property="sampleId" column="sample_Id" />
+		<result property="fileName" column="file_Name" />
+		<result property="filePath" column="file_Path" />
+		<result property="fileSize" column="file_Size" />
+		<result property="fileType" column="file_Type" />
+		<result property="uploadDate" column="upload_Date" />
 	</resultMap>
 
 	<insert id="insertSample" parameterType="SampleVO">
 
-			INSERT INTO SAMPLE
-				( ID
-				  , NAME
-				  , DESCRIPTION
-				  , USE_YN
-				  , REG_USER )
-			VALUES ( #{id}
-				  , #{name}
-				  , #{description}
-				  , #{useYn}
-				  , #{regUser} )
+		INSERT INTO SAMPLE
+		( ID
+		, NAME
+		, DESCRIPTION
+		, USE_YN
+		, REG_USER )
+		VALUES ( #{id}
+		, #{name}
+		, #{description}
+		, #{useYn}
+		, #{regUser} )
 
 	</insert>
 
 	<update id="updateSample">
 
-			UPDATE SAMPLE
-			SET ID=#{id}
-				, NAME=#{name}
-				, DESCRIPTION=#{description}
-				, USE_YN=#{useYn}
-				  WHERE ID=#{id}
+		UPDATE SAMPLE
+		SET ID=#{id}
+		, NAME=#{name}
+		, DESCRIPTION=#{description}
+		, USE_YN=#{useYn}
+		WHERE ID=#{id}
 
 	</update>
 
 	<delete id="deleteSample">
 
-			DELETE FROM SAMPLE
-			WHERE ID=#{id}
+		DELETE FROM SAMPLE
+		WHERE ID=#{id}
 
 	</delete>
 
 	<select id="selectSample" resultMap="sample">
 
-			SELECT
-				ID, NAME, DESCRIPTION, USE_YN, REG_USER
-			FROM SAMPLE
-			WHERE ID=#{id}
+		SELECT
+		ID, NAME, DESCRIPTION, USE_YN, REG_USER
+		FROM SAMPLE
+		WHERE ID=#{id}
 
 	</select>
 
-	<select id="selectSampleList" parameterType="searchVO" resultType="egovMap">
+	<select id="selectSampleList" parameterType="searchVO"
+		resultType="egovMap">
 
-			SELECT
-				ID, NAME, DESCRIPTION, USE_YN, REG_USER
-			FROM SAMPLE
-			WHERE 1=1
-			<if test="searchKeyword != null and searchKeyword != ''">
-		        <choose>
-		            <when test="searchCondition == 0">
-						AND	ID LIKE '%' || #{searchKeyword} || '%'
-					</when>
-		            <when test="searchCondition == 1">
-						AND	NAME LIKE '%' || #{searchKeyword} || '%'
-					</when>
-				</choose>
-			</if>
-			ORDER BY ID ASC
-			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+		SELECT
+		ID, NAME, DESCRIPTION, USE_YN, REG_USER
+		FROM SAMPLE
+		WHERE 1=1
+		<if test="searchKeyword != null and searchKeyword != ''">
+			<choose>
+				<when test="searchCondition == 0">
+					AND ID LIKE '%' || #{searchKeyword} || '%'
+				</when>
+				<when test="searchCondition == 1">
+					AND NAME LIKE '%' || #{searchKeyword} || '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY ID ASC
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 
-	<select id="selectSampleListTotCnt" parameterType="searchVO" resultType="int">
+	<select id="selectSampleListTotCnt" parameterType="searchVO"
+		resultType="int">
 
-			SELECT COUNT(*) totcnt
-			FROM SAMPLE
-			WHERE 1=1
-			<if test="searchKeyword != null and searchKeyword != ''">
-		        <choose>
-		            <when test="searchCondition == 0">
-						AND ID LIKE '%' || #{searchKeyword} || '%'
-					</when>
-		            <when test="searchCondition == 1">
-						AND	NAME LIKE '%' || #{searchKeyword} || '%'
-					</when>
-				</choose>
-			</if>
+		SELECT COUNT(*) totcnt
+		FROM SAMPLE
+		WHERE 1=1
+		<if test="searchKeyword != null and searchKeyword != ''">
+			<choose>
+				<when test="searchCondition == 0">
+					AND ID LIKE '%' || #{searchKeyword} || '%'
+				</when>
+				<when test="searchCondition == 1">
+					AND NAME LIKE '%' || #{searchKeyword} || '%'
+				</when>
+			</choose>
+		</if>
 	</select>
+
+	<insert id="insertFileInfo">
+		INSERT INTO SAMPLE_FILE (SAMPLE_ID, FILE_NAME)
+		VALUES (#{sampleId}, #{fileName})
+	</insert>
+	<insert id="insertSampleFile"
+		parameterType="egovframework.example.sample.service.SampleFileVO">
+		INSERT INTO SAMPLE_FILE (FILE_ID, SAMPLE_ID, FILE_NAME, FILE_PATH,
+		FILE_SIZE, FILE_TYPE, UPLOAD_DATE)
+		VALUES (#{fileId}, #{sampleId}, #{fileName}, #{filePath}, #{fileSize},
+		#{fileType}, #{uploadDate})
+	</insert>
+
+	<select id="selectSampleFilesByFileId" resultMap="fileVO">
+		SELECT
+		FILE_ID,
+		SAMPLE_ID,
+		FILE_NAME,
+		FILE_PATH,
+		FILE_SIZE,
+		FILE_TYPE,
+		UPLOAD_DATE
+		FROM SAMPLE_FILE
+		WHERE SAMPLE_ID = #{sampleId}
+	</select>
+
+	<delete id="deleteSampleFile" parameterType="string">
+		DELETE FROM SAMPLE_FILE WHERE FILE_ID = #{fileId}
+	</delete>
 
 </mapper>

@@ -8,37 +8,33 @@
 	<version>1.0.0</version>
 	<name>boot-example</name>
 	<url>http://www.egovframe.go.kr</url>
-
 	<licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
 	<parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.0</version>
-    </parent>
-
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.0</version>
+	</parent>
 	<properties>
-	    <spring.maven.artifact.version>5.3.20</spring.maven.artifact.version>
+		<spring.maven.artifact.version>5.3.20</spring.maven.artifact.version>
 		<org.egovframe.rte.version>4.1.0</org.egovframe.rte.version>
 	</properties>
-
 	<repositories>
-        <repository>
-            <id>mvn2s</id>
-            <url>https://repo1.maven.org/maven2/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
+		<repository>
+			<id>mvn2s</id>
+			<url>https://repo1.maven.org/maven2/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
 			<id>egovframe</id>
 			<url>https://maven.egovframe.go.kr/maven/</url>
 			<releases>
@@ -48,8 +44,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-    </repositories>
-
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -71,67 +66,83 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
-    		<groupId>mysql</groupId>
-    		<artifactId>mysql-connector-java</artifactId>
-    		<version>8.0.33</version>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
 		<dependency>
-    		<groupId>org.mariadb.jdbc</groupId>
-    		<artifactId>mariadb-java-client</artifactId>
-    		<version>3.4.1</version>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>3.4.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2 -->
 		<dependency>
-    		<groupId>org.apache.commons</groupId>
-    		<artifactId>commons-dbcp2</artifactId>
-    		<version>2.9.0</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>2.9.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>2.2.0</version>
+		</dependency>
 		<!-- 표준프레임워크 실행환경 -->
-        <dependency>
-		    <groupId>org.egovframe.rte</groupId>
-		    <artifactId>org.egovframe.rte.ptl.mvc</artifactId>
-		    <version>${org.egovframe.rte.version}</version>
-		    <exclusions>
-		    	<exclusion>
-		    		<artifactId>commons-logging</artifactId>
-		    		<groupId>commons-logging</groupId>
-		    	</exclusion>
-		    </exclusions>
-        </dependency>
-        <dependency>
-		    <groupId>org.egovframe.rte</groupId>
-		    <artifactId>org.egovframe.rte.psl.dataaccess</artifactId>
-		    <version>${org.egovframe.rte.version}</version>
-        </dependency>
-        <dependency>
+		<dependency>
+			<groupId>org.egovframe.rte</groupId>
+			<artifactId>org.egovframe.rte.ptl.mvc</artifactId>
+			<version>${org.egovframe.rte.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.egovframe.rte</groupId>
+			<artifactId>org.egovframe.rte.psl.dataaccess</artifactId>
+			<version>${org.egovframe.rte.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.egovframe.rte</groupId>
 			<artifactId>org.egovframe.rte.fdl.idgnr</artifactId>
 			<version>${org.egovframe.rte.version}</version>
 		</dependency>
-       	<dependency>
+		<dependency>
 			<groupId>org.egovframe.rte</groupId>
 			<artifactId>org.egovframe.rte.fdl.property</artifactId>
 			<version>${org.egovframe.rte.version}</version>
 		</dependency>
-
-        <dependency>
-		    <groupId>taglibs</groupId>
-		    <artifactId>standard</artifactId>
-		    <version>1.1.2</version>
-        </dependency>
 		<dependency>
-            <groupId>org.antlr</groupId>
-	        <artifactId>antlr</artifactId>
-	        <version>3.5</version>
-        </dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr</artifactId>
+			<version>3.5</version>
+		</dependency>
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
@@ -144,23 +155,21 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                	<excutable>true</excutable>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excutable>true</excutable>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
