@@ -71,8 +71,8 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	/** ID Generation */
 	@Resource(name = "egovIdGnrService")
 	private EgovIdGnrService egovIdGnrService;
-
-	public String uploadDir = "C:/Users/fasol/Desktop/uploadFiles/";
+	
+	private String uploadDir = "C:/Users/fasol/Desktop/uploadFiles";
 
 	/**
 	 * 글을 등록한다.
@@ -85,45 +85,43 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	public String insertSample(SampleVO vo) throws Exception {
 		LOGGER.debug(vo.toString());
 
-		String id = egovIdGnrService.getNextStringId();
-		vo.setId(id);
-		LOGGER.debug(vo.toString());
+	    String id = egovIdGnrService.getNextStringId();
+	    vo.setId(id);
+	    LOGGER.debug(vo.toString());
 
-		sampleDAO.insertSample(vo);
-
-		if (vo.getFiles() != null && !vo.getFiles().isEmpty()) {
-			uploadSampleFiles(id, vo.getFiles());
-			log.info("성공{}", id);
-		}
-
-		return id;
+	    sampleDAO.insertSample(vo);
+	    
+	    if (vo.getFiles() != null && !vo.getFiles().isEmpty()) {
+	        uploadSampleFiles(id, vo.getFiles());
+	    }
+	    
+	    return id;
 	}
 
 	@Override
 	public void uploadSampleFiles(String sampleId, List<MultipartFile> files) throws Exception {
-		for (MultipartFile file : files) {
-			if (!file.isEmpty()) {
-				String originalFileName = file.getOriginalFilename();
-				String savedFileName = UUID.randomUUID().toString() + getFileExtension(originalFileName);
-				String filePath = uploadDir + File.separator + savedFileName;
+	    for (MultipartFile file : files) {
+	        if (!file.isEmpty()) {
+	            String originalFileName = file.getOriginalFilename();
+	            String savedFileName = UUID.randomUUID().toString() + getFileExtension(originalFileName);
+	            String filePath = uploadDir + File.separator + savedFileName;
 
-				File dest = new File(filePath);
-				file.transferTo(dest);
+	            File dest = new File(filePath);
+	            file.transferTo(dest);
 
-				SampleFileVO sampleFileVO = new SampleFileVO();
-				sampleFileVO.setFileId(UUID.randomUUID().toString());
-				sampleFileVO.setSampleId(sampleId);
-				sampleFileVO.setFileName(originalFileName);
-				sampleFileVO.setFilePath(filePath);
-				sampleFileVO.setFileSize(file.getSize());
-				sampleFileVO.setFileType(file.getContentType());
-				sampleFileVO.setUploadDate(LocalDateTime.now());
+	            SampleFileVO sampleFileVO = new SampleFileVO();
+	            sampleFileVO.setFileId(UUID.randomUUID().toString());
+	            sampleFileVO.setSampleId(sampleId);
+	            sampleFileVO.setFileName(originalFileName);
+	            sampleFileVO.setFilePath(filePath);
+	            sampleFileVO.setFileSize(file.getSize());
+	            sampleFileVO.setFileType(file.getContentType());
+	            sampleFileVO.setUploadDate(LocalDateTime.now());
 
-				sampleDAO.insertSampleFile(sampleFileVO);
-			}
-		}
+	            sampleDAO.insertSampleFile(sampleFileVO);
+	        }
+	    }
 	}
-	
 
 	/**
 	 * 글을 수정한다.
@@ -188,6 +186,8 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 		return sampleDAO.selectSampleListTotCnt(searchVO);
 	}
 
+	
+
 	@Override
 	public List<SampleFileVO> getSampleFiles(String sampleId) throws Exception {
 		return sampleDAO.selectSampleFilesBySampleId(sampleId);
@@ -224,16 +224,5 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 	private String getFileExtension(String fileName) {
 		return fileName.substring(fileName.lastIndexOf("."));
 	}
-	/*
-	@Override
-	public SampleFileVO getFileInfo(String fileId) throws Exception {
-		return sampleDAO.selectSampleFileByFileId(fileId);
-	}
-
-	@Override
-	public void saveFileInfo(String sampleId, List<String> fileNames) throws Exception {
-		// TODO Auto-generated method stub
-		
-	} */
 
 }

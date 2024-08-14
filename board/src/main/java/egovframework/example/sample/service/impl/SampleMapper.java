@@ -100,12 +100,12 @@ public interface SampleMapper {
 
 	void insertFileInfo(String sampleId, String fileName) throws Exception;
 
-	void insertSampleFile(SampleFileVO sampleFileVO);
-
-	List<SampleFileVO> selectSampleFilesBySampleId(String sampleId);
-
-	SampleFileVO selectSampleFileByFileId(String fileId);
-
-	void deleteSampleFile(String fileId);
+    void insertSampleFile(SampleFileVO sampleFileVO);
+    
+    List<SampleFileVO> selectSampleFilesBySampleId(String sampleId);
+    
+    SampleFileVO selectSampleFileByFileId(String fileId);
+    
+    void deleteSampleFile(String fileId);
 
 }

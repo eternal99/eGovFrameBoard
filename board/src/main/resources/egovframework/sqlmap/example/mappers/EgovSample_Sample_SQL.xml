@@ -117,7 +117,7 @@
 		#{fileType}, #{uploadDate})
 	</insert>
 
-	<select id="selectSampleFilesByFileId" resultMap="fileVO">
+	<select id="selectSampleFileByFileId" resultMap="fileVO">
 		SELECT
 		FILE_ID,
 		SAMPLE_ID,

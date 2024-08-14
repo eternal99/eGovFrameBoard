@@ -57,7 +57,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
-@Slf4j
 @Controller
 public class EgovSampleController {
 
@@ -101,12 +100,10 @@ public class EgovSampleController {
 
 	@PostMapping("/sample/detail")
 	public String detail(@ModelAttribute SampleVO sampleVO, @RequestParam String id, Model model) throws Exception {
-	    sampleVO.setId(id);
-	    SampleVO detail = this.sampleService.selectSample(sampleVO);
-	    //List<SampleFileVO> files = this.sampleService.getSampleFiles(id);
-//	    detail.setSampleFiles(files);
-	    model.addAttribute("sampleVO", detail);
-	    return "thymeleaf/sample/egovSampleRegister";
+		sampleVO.setId(id);
+		SampleVO detail = this.sampleService.selectSample(sampleVO);
+		model.addAttribute("sampleVO", detail);
+		return "thymeleaf/sample/egovSampleRegister";
 	}
 
 	@GetMapping("/sample/add")
@@ -121,18 +118,17 @@ public class EgovSampleController {
 
 	@PostMapping("/sample/add")
 	public String add(@Valid @ModelAttribute SampleVO sampleVO, BindingResult bindingResult,
-			@RequestParam("files") List<MultipartFile> files, HttpSession session)
-			throws Exception {
-		if (bindingResult.hasErrors()) {
-			return "thymeleaf/sample/egovSampleRegister";
-		}
-		Member loginMember = (Member) session.getAttribute(SessoinConst.LOGIN_MEMBER);
-		if (loginMember != null) {
-			sampleVO.setRegUser(loginMember.getName());
-		}
-		sampleVO.setFiles(files);
-		this.sampleService.insertSample(sampleVO);
-		return "redirect:/egovSampleList";
+					@RequestParam("files") List<MultipartFile> files, HttpSession session) throws Exception {
+	    if (bindingResult.hasErrors()) {
+	        return "thymeleaf/sample/egovSampleRegister";
+	    }
+	    Member loginMember = (Member) session.getAttribute(SessoinConst.LOGIN_MEMBER);
+	    if (loginMember != null) {
+	        sampleVO.setRegUser(loginMember.getName());
+	    }
+	    sampleVO.setFiles(files);
+	    this.sampleService.insertSample(sampleVO);
+	    return "redirect:/egovSampleList";
 	}
 
 	@PostMapping("/sample/update")
@@ -141,7 +137,7 @@ public class EgovSampleController {
 			return "thymeleaf/sample/egovSampleRegister";
 		}
 		SampleVO existingSample = this.sampleService.selectSample(sampleVO);
-		sampleVO.setRegUser(existingSample.getRegUser());
+        sampleVO.setRegUser(existingSample.getRegUser());
 		this.sampleService.updateSample(sampleVO);
 		return "redirect:/egovSampleList";
 	}
@@ -151,40 +147,5 @@ public class EgovSampleController {
 		this.sampleService.deleteSample(sampleVO);
 		return "redirect:/egovSampleList";
 	}
-	/*
-	@GetMapping("/sample/files/{sampleId}")
-	public String getFiles(@PathVariable String sampleId, Model model) throws Exception {
-		List<SampleFileVO> files = sampleService.getSampleFiles(sampleId);
-		model.addAttribute("files", files);
-		return "thymeleaf/sample/sampleFiles";
-	}
-
-	@GetMapping("/sample/download/{fileId}")
-	public ResponseEntity<org.springframework.core.io.Resource> downloadFile(@PathVariable String fileId) throws Exception {
-		SampleFileVO fileInfo = sampleService.getFileInfo(fileId);
-
-		if (fileInfo == null) {
-			return ResponseEntity.notFound().build();
-		}
-
-		Path filePath = Paths.get(fileInfo.getFilePath());
-		org.springframework.core.io.Resource resource = new UrlResource(filePath.toUri());
-
-		if (!resource.exists() || !resource.isReadable()) {
-			throw new RuntimeException("파일을 읽을 수 없습니다.");
-		}
-
-		String encodedFileName = UriUtils.encode(fileInfo.getFileName(), StandardCharsets.UTF_8);
-		String contentDisposition = "attachment; filename=\"" + encodedFileName + "\"";
-
-		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
-	}
-
-	@GetMapping("/sample/deleteFile/{fileId}")
-	public String deleteFile(@PathVariable String fileId, @RequestParam String sampleId) throws Exception {
-		sampleService.deleteSampleFile(fileId);
-		return "redirect:/sample/detail?id=" + sampleId;
-	} */
-
+	
 }
