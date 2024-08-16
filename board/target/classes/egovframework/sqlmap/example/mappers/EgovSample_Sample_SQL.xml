@@ -27,13 +27,15 @@
 
 		INSERT INTO SAMPLE
 		( ID
-		, NAME
+		,
+		NAME
 		, DESCRIPTION
 		, USE_YN
 		, REG_USER )
 		VALUES ( #{id}
 		, #{name}
-		, #{description}
+		,
+		#{description}
 		, #{useYn}
 		, #{regUser} )
 
@@ -44,7 +46,8 @@
 		UPDATE SAMPLE
 		SET ID=#{id}
 		, NAME=#{name}
-		, DESCRIPTION=#{description}
+		,
+		DESCRIPTION=#{description}
 		, USE_YN=#{useYn}
 		WHERE ID=#{id}
 
@@ -60,7 +63,8 @@
 	<select id="selectSample" resultMap="sample">
 
 		SELECT
-		ID, NAME, DESCRIPTION, USE_YN, REG_USER
+		ID, NAME, DESCRIPTION,
+		USE_YN, REG_USER
 		FROM SAMPLE
 		WHERE ID=#{id}
 
@@ -107,17 +111,22 @@
 
 	<insert id="insertFileInfo">
 		INSERT INTO SAMPLE_FILE (SAMPLE_ID, FILE_NAME)
-		VALUES (#{sampleId}, #{fileName})
+		VALUES
+		(#{sampleId}, #{fileName})
 	</insert>
 	<insert id="insertSampleFile"
 		parameterType="egovframework.example.sample.service.SampleFileVO">
-		INSERT INTO SAMPLE_FILE (FILE_ID, SAMPLE_ID, FILE_NAME, FILE_PATH,
+		INSERT INTO SAMPLE_FILE (FILE_ID, SAMPLE_ID, FILE_NAME,
+		FILE_PATH,
 		FILE_SIZE, FILE_TYPE, UPLOAD_DATE)
-		VALUES (#{fileId}, #{sampleId}, #{fileName}, #{filePath}, #{fileSize},
-		#{fileType}, #{uploadDate})
+		VALUES (#{fileId},
+		#{sampleId}, #{fileName}, #{filePath}, #{fileSize},
+		#{fileType},
+		#{uploadDate})
 	</insert>
 
-	<select id="selectSampleFileByFileId" resultMap="fileVO">
+	<select id="selectSampleFilesBySampleId" parameterType="string"
+		resultMap="fileVO">
 		SELECT
 		FILE_ID,
 		SAMPLE_ID,
@@ -130,8 +139,23 @@
 		WHERE SAMPLE_ID = #{sampleId}
 	</select>
 
+	<select id="selectSampleFileByFileId" parameterType="string"
+		resultMap="fileVO">
+		SELECT
+		FILE_ID,
+		SAMPLE_ID,
+		FILE_NAME,
+		FILE_PATH,
+		FILE_SIZE,
+		FILE_TYPE,
+		UPLOAD_DATE
+		FROM SAMPLE_FILE
+		WHERE FILE_ID = #{fileId}
+	</select>
+
 	<delete id="deleteSampleFile" parameterType="string">
-		DELETE FROM SAMPLE_FILE WHERE FILE_ID = #{fileId}
+		DELETE FROM
+		SAMPLE_FILE WHERE FILE_ID = #{fileId}
 	</delete>
 
 </mapper>

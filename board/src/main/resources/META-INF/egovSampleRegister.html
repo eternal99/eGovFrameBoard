@@ -121,7 +121,12 @@
 					<tr>
 						<td><input type="file" name="files"></td>
 					</tr>
-					<!--   <a th:href="@{'/sample/files/' + ${sampleVO.id}}">View Files</a>-->
+					<tr th:if="${not #strings.isEmpty(sampleVO.id)}">
+						<td class="tbtd_caption"><label for="files">Files</label></td>
+						<td class="tbtd_content"><a
+							th:href="@{/sample/files/{id}(id=${sampleVO.id})}">View Files</a>
+						</td>
+					</tr>
 					<input type="hidden" id="regUser" name="regUser"
 						th:value="${sampleVO.regUser}" />
 				</table>

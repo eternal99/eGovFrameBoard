@@ -92,5 +92,9 @@ public interface EgovSampleService {
     List<SampleFileVO> getSampleFiles(String sampleId) throws Exception;
     
     void deleteSampleFile(String fileId) throws Exception;
+    
+    SampleFileVO getSampleFile(String fileId) throws Exception;
+
+
 }
 

@@ -148,4 +148,28 @@ public class EgovSampleController {
 		return "redirect:/egovSampleList";
 	}
 	
+	@GetMapping("/sample/files/{sampleId}")
+	public String getFiles(@PathVariable String sampleId, Model model) throws Exception {
+	    List<SampleFileVO> files = sampleService.getSampleFiles(sampleId);
+	    model.addAttribute("files", files);
+	    return "thymeleaf/sample/fileList";
+	}
+
+	@GetMapping("/sample/download/{fileId}")
+	public ResponseEntity<UrlResource> downloadFile(@PathVariable String fileId) throws Exception {
+	    SampleFileVO file = sampleService.getSampleFile(fileId);
+	    if (file == null) {
+	        return ResponseEntity.notFound().build();
+	    }
+
+	    UrlResource resource = new UrlResource("file:" + file.getFilePath());
+	    
+	    String encodedFileName = UriUtils.encode(file.getFileName(), StandardCharsets.UTF_8);
+	    String contentDisposition = "attachment; filename=\"" + encodedFileName + "\"";
+
+	    return ResponseEntity.ok()
+	            .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+	            .contentType(MediaType.parseMediaType(file.getFileType()))
+	            .body(resource);
+	}
 }

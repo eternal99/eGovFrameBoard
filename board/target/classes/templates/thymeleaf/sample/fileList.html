@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Sample Files</title>
+    <title>File List</title>
 </head>
 <body>
-    <h1>Sample Files</h1>
+    <h1>File List</h1>
     <table>
         <thead>
             <tr>
@@ -18,12 +18,13 @@
             <tr th:each="file : ${files}">
                 <td th:text="${file.fileName}"></td>
                 <td th:text="${file.fileSize}"></td>
-                <td th:text="${#temporals.format(file.uploadDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${file.uploadDate}"></td>
                 <td>
-                    <a th:href="@{'/sample/download/' + ${file.fileId}}">Download</a>
+                    <a th:href="@{/sample/download/{fileId}(fileId=${file.fileId})}">Download</a>
                 </td>
             </tr>
         </tbody>
     </table>
+    <a th:href="@{/egovSampleList}">Back to List</a>
 </body>
 </html>

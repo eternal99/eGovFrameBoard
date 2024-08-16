@@ -225,4 +225,8 @@ public class EgovSampleServiceImpl extends EgovAbstractServiceImpl implements Eg
 		return fileName.substring(fileName.lastIndexOf("."));
 	}
 
+	@Override
+	public SampleFileVO getSampleFile(String fileId) throws Exception {
+	    return sampleDAO.selectSampleFileByFileId(fileId);
+	}
 }
